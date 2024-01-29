@@ -60,76 +60,60 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
-
-/////////////////////////////////////////////////
-/////////////////////////////////////////////////
-// LECTURES
-
-// const currencies = new Map([
-//   ['USD', 'United States dollar'],
-//   ['EUR', 'Euro'],
-//   ['GBP', 'Pound sterling'],
-// ]);
-
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-
-//
-//ForEach method
-
-movements.forEach(function (mov, i, arr) {
-  if (mov > 0) {
-    console.log(`movement :${i + 1} you deposete ${mov}`);
-  } else {
-    console.log(`movement :${i + 1} you withdrewl ${Math.abs(mov)}`);
-  }
-  console.log(arr);
-});
-//
-//fore each on map
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
-
-currencies.forEach(function (value, key, map) {
-  console.log(`${key}: ${value}`);
-});
-
-// forEach on sets
-const uniqueCurrencies = new Set(['USD', 'INR', 'EUR', 'INR', 'USD']);
-console.log(uniqueCurrencies);
-uniqueCurrencies.forEach(function (value, _, set) {
-  console.log(`${value}: ${value}`);
-});
-
 //
 
-/////////////////////////////////////////////////
+const displayMovements = function (movements) {
+  containerMovements.innerHTML = '';
+  movements.forEach((mov, i) => {
+    const type = mov < 0 ? 'deposit' : 'withdrawal';
+    const html = `
+    <div class="movements">
+        <div class="movements__row">
+        <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
+        <div class="movements__value">${mov}</div>
+    </div>`;
+    containerMovements.insertAdjacentHTML('afterbegin', html);
+  });
+};
 
-const arr = ['a', 'b', 'c', 'd', 'e'];
+displayMovements(account1.movements);
 
-//slice method
-console.log(arr.slice(1, 4));
-console.log(arr.slice(-2));
-console.log(arr); // slice does not mutate original arr
+const calcDisplayBlance = function (movements) {
+  const balance = movements.reduce((acc, cur) => acc + cur, 0);
+  labelBalance.textContent = balance;
+};
+calcDisplayBlance(account1.movements);
 
-// splice
-console.log(arr.splice(0, 2)); // delete all element after index 2
-console.log(arr.splice(-2));
-console.log(arr); // splice do mutate original array;
+// Creating userName on accounts array
+const CreatUserName = function (accnt) {
+  accnt.forEach(acc => {
+    acc.userName = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(indx => indx[0])
+      .join('');
+  });
+};
+CreatUserName(accounts);
+console.log(accounts);
 
-//reverse
-const arr1 = ['a', 'b', 'c', 'd', 'e'];
-const arr2 = ['j', 'i', 'h', 'g', 'f'];
-console.log(arr2.reverse());
-console.log(arr2); // reverse also mutate original array
+// createing withdrawal
+const movements = [200, -200, 340, -300, -20, 50, 400, -460];
+const withdrawal = movements.filter(function (mov) {
+  return mov < 0;
+});
+// creating deposite
+const deposite = movements.filter(mov => mov > 0);
+// counting total value of movements
 
-// join
-console.log(arr1.join('-'));
+const balance = movements.reduce((acc, curr, i, arr) => {
+  return acc + curr;
+}, 0);
 
-// concat
-const letters = arr1.concat(arr2);
-console.log(letters);
-console.log(letters.join('_'));
-console.log(arr1, arr2); // concat does not mutate original array
+console.log(withdrawal);
+console.log(deposite);
+console.log(balance);
+console.log(movements);
+//
