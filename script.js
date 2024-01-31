@@ -108,7 +108,7 @@ const withdrawal = movements.filter(function (mov) {
 const deposite = movements.filter(mov => mov > 0);
 // counting total value of movements
 
-const balance = movements.reduce((acc, curr, i, arr) => {
+const balance = movements.reduce((acc, curr) => {
   return acc + curr;
 }, 0);
 
@@ -117,3 +117,30 @@ console.log(deposite);
 console.log(balance);
 console.log(movements);
 //
+
+// maxvalue in an array with reduce method..
+const max = movements.reduce((acc, mov) => {
+  if (acc > mov) {
+    return acc;
+  } else {
+    return mov;
+  }
+}, 200);
+
+console.log(max);
+
+// challenge 2
+
+const calcAverageHumanAge = function (ages) {
+  const humanAge = ages.map(age => (age <= 2 ? 2 * age : 16 + age * 4));
+  const adults = humanAge.filter(age => age >= 18);
+  console.log(humanAge);
+  console.log(adults);
+
+  const average = adults.reduce((acc, age) => acc + age, 0) / adults.length;
+  return average;
+};
+
+const aver1 = calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
+const aver2 = calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
+console.log(aver1, aver2git);
