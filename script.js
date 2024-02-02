@@ -78,34 +78,34 @@ const displayMovements = function (movements) {
   });
 };
 
-displayMovements(account1.movements);
+// displayMovements(account1.movements);
 
 const calcDisplayBlance = function (movements) {
   const balance = movements.reduce((acc, cur) => acc + cur, 0);
   labelBalance.textContent = balance;
 };
-calcDisplayBlance(account1.movements);
+// calcDisplayBlance(account1.movements);
 
 // calc in, out , intrest
-const calcBalance = function (movement) {
-  const incomes = movement
+const calcdisplaySummery = function (account) {
+  const incomes = account.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = incomes;
-  const outMoney = movement
+  const outMoney = account.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(outMoney)}`;
-  const intrest = movement
+  const intrest = account.movements
     .filter(mov => mov > 0)
-    .map(deposit => (deposit * 1.2) / 100)
+    .map(deposit => (deposit * account.interestRate) / 100)
     .filter(mov => {
       return mov >= 1;
     })
     .reduce((acc, intrest) => acc + intrest, 0);
   labelSumInterest.textContent = ` ${intrest}`;
 };
-calcBalance(account1.movements);
+// calcBalance(account1.movements);
 
 // Creating userName on accounts array
 const CreatUserName = function (accnt) {
@@ -118,72 +118,32 @@ const CreatUserName = function (accnt) {
   });
 };
 CreatUserName(accounts);
-console.log(accounts);
+// console.log(accounts);
 
-// createing withdrawal
-const movements = [200, -200, 340, -300, -20, 50, 400, -460];
-const euroToUsd = 1.1;
-const calculateDeposite = function (movements) {
-  const deposite = movements
-    .filter(mov => mov > 0)
-    .map(mov => mov * euroToUsd)
-    .reduce((acc, mov) => acc + mov, 0);
-  console.log(deposite);
-};
-calculateDeposite(movements);
+// login functionality
 
-const withdrawal = movements.filter(function (mov) {
-  return mov < 0;
-});
-// creating deposite
-const deposite = movements.filter(mov => mov > 0);
-// counting total value of movements
+let currentAccount;
 
-const balance = movements.reduce((acc, curr) => {
-  return acc + curr;
-}, 0);
+btnLogin.addEventListener('click', e => {
+  e.preventDefault();
 
-console.log(withdrawal);
-console.log(deposite);
-console.log(balance);
-console.log(movements);
-//
+  currentAccount = accounts.find(
+    acc => acc.userName === inputLoginUsername.value
+  );
+  // console.log(currentAccount);
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    // desplying welcome message & UI.
+    labelWelcome.textContent = `Welcome ${currentAccount.owner.split(' ')[0]}`;
+    containerApp.style.opacity = 100;
 
-// maxvalue in an array with reduce method..
-const max = movements.reduce((acc, mov) => {
-  if (acc > mov) {
-    return acc;
-  } else {
-    return mov;
+    inputLoginUsername.value = inputLoginPin.value = '';
+    inputLoginPin.blur();
+
+    //desplying movment
+    displayMovements(currentAccount.movements);
+    // desplaying balence
+    calcDisplayBlance(currentAccount.movements);
+    // desplaying intrest
+    calcdisplaySummery(currentAccount);
   }
-}, 200);
-
-console.log(max);
-
-// challenge 2
-
-// const calcAverageHumanAge = function (ages) {
-//   const humanAge = ages.map(age => (age <= 2 ? 2 * age : 16 + age * 4));
-//   const adults = humanAge.filter(age => age >= 18);
-//   console.log(humanAge);
-//   console.log(adults);
-
-//   const average = adults.reduce((acc, age) => acc + age, 0) / adults.length;
-//   return average;
-// };
-
-// const aver1 = calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
-// const aver2 = calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
-// console.log(aver1, aver2);
-
-// clallenge 3
-
-const calcAverageHumanAge = ages => {
-  return ages
-    .map(age => (age <= 2 ? 2 * age : 16 + age * 4))
-    .filter(age => age >= 18)
-    .reduce((acc, age, i, arr) => acc + age / arr.length, 0);
-};
-const aver1 = calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
-const aver2 = calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
-console.log(aver1, aver2);
+});
