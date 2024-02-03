@@ -65,7 +65,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 const displayMovements = function (movements) {
   containerMovements.innerHTML = '';
   movements.forEach((mov, i) => {
-    const type = mov < 0 ? 'deposit' : 'withdrawal';
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
     <div class="movements">
         <div class="movements__row">
@@ -80,9 +80,9 @@ const displayMovements = function (movements) {
 
 // displayMovements(account1.movements);
 
-const calcDisplayBlance = function (movements) {
-  const balance = movements.reduce((acc, cur) => acc + cur, 0);
-  labelBalance.textContent = balance;
+const calcDisplayBlance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, cur) => acc + cur, 0);
+  labelBalance.textContent = `${acc.balance}`;
 };
 // calcDisplayBlance(account1.movements);
 
@@ -106,7 +106,14 @@ const calcdisplaySummery = function (account) {
   labelSumInterest.textContent = ` ${intrest}`;
 };
 // calcBalance(account1.movements);
-
+const updateUi = function (acc) {
+  //desplying movment
+  displayMovements(acc.movements);
+  // desplaying balence
+  calcDisplayBlance(acc);
+  // desplaying intrest
+  calcdisplaySummery(acc);
+};
 // Creating userName on accounts array
 const CreatUserName = function (accnt) {
   accnt.forEach(acc => {
@@ -121,9 +128,8 @@ CreatUserName(accounts);
 // console.log(accounts);
 
 // login functionality
-
+//event handlers
 let currentAccount;
-
 btnLogin.addEventListener('click', e => {
   e.preventDefault();
 
@@ -138,12 +144,47 @@ btnLogin.addEventListener('click', e => {
 
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
-
-    //desplying movment
-    displayMovements(currentAccount.movements);
-    // desplaying balence
-    calcDisplayBlance(currentAccount.movements);
-    // desplaying intrest
-    calcdisplaySummery(currentAccount);
+    updateUi(currentAccount);
   }
+});
+
+// Transfer money functionality
+
+btnTransfer.addEventListener('click', e => {
+  e.preventDefault();
+
+  const amount = Number(inputTransferAmount.value);
+  const reciverAcount = accounts.find(
+    acc => acc.userName === inputTransferTo.value
+  );
+
+  if (
+    amount > 0 &&
+    reciverAcount &&
+    currentAccount.balance >= amount &&
+    reciverAcount?.userName !== currentAccount.userName
+  ) {
+    currentAccount.movements.push(-amount);
+    reciverAcount.movements.push(amount);
+
+    inputTransferAmount.value = inputTransferTo.value = '';
+
+    updateUi(currentAccount);
+    console.log('Valid Transfer');
+  }
+
+  //  add positive movement to recipent
+});
+
+btnClose.addEventListener('click', e => {
+  e.preventDefault();
+  if (
+    inputCloseUsername.value === currentAccount.userName &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(acc => acc === currentAccount);
+    accounts.splice(index, 1);
+    containerApp.style.opacity = 0;
+  }
+  inputClosePin.value = inputCloseUsername.value = '';
 });
