@@ -62,9 +62,12 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 //
 
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
-  movements.forEach((mov, i) => {
+
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach((mov, i) => {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
     const html = `
     <div class="movements">
@@ -176,6 +179,17 @@ btnTransfer.addEventListener('click', e => {
   //  add positive movement to recipent
 });
 
+// loan feture
+btnLoan.addEventListener('click', e => {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
+    currentAccount.movements.push(amount);
+    updateUi(currentAccount);
+    inputLoanAmount.value = '';
+  }
+});
+
 btnClose.addEventListener('click', e => {
   e.preventDefault();
   if (
@@ -188,3 +202,43 @@ btnClose.addEventListener('click', e => {
   }
   inputClosePin.value = inputCloseUsername.value = '';
 });
+
+// sort movements
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
+
+// some and every method
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+console.log(movements.some(mov => mov > 0)); //return true
+console.log(movements.some(mov => mov < 0)); //return true
+
+// every
+console.log(movements.every(mov => mov > 0)); // returns false
+console.log(movements.every(mov => mov < 0)); // returns false
+
+// flat and faltMap method
+
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8]; // 1 level nesed
+const arr2 = [[1, [2, 3]], [[4, 5], 6], 7, 8]; // 2 level nested
+console.log(arr);
+console.log(arr2);
+//flat
+console.log(arr.flat());
+console.log(arr2.flat(2));
+//
+const overAllBalence = accounts
+  .map(acc => acc.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overAllBalence);
+
+// with flat map
+const overAllBalence2 = accounts
+  .flatMap(acc => acc.movements) // flatMap only flat that one level nested
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overAllBalence2);
