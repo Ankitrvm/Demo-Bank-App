@@ -242,3 +242,5 @@ const overAllBalence2 = accounts
   .flatMap(acc => acc.movements) // flatMap only flat that one level nested
   .reduce((acc, mov) => acc + mov, 0);
 console.log(overAllBalence2);
+console.log(overAllBalence2);
+console.log(overAllBalence2);
