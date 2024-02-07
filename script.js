@@ -244,3 +244,9 @@ const overAllBalence2 = accounts
 console.log(overAllBalence2);
 console.log(overAllBalence2);
 console.log(overAllBalence2);
+console.log(overAllBalence2);
+console.log(overAllBalence2);
+console.log(overAllBalence2);
+console.log(overAllBalence2);
+console.log(overAllBalence2);
+console.log(overAllBalence2);
